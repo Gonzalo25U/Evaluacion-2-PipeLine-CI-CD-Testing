@@ -1,0 +1,70 @@
+version: 2
+
+updates:
+
+  # ── Dependencias Maven - Backend Ventas ─────────────────────────────────────
+  - package-ecosystem: "maven"
+    directory: "/backend-ventas"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "backend-ventas"
+
+  # ── Dependencias Maven - Backend Despachos ───────────────────────────────────
+  - package-ecosystem: "maven"
+    directory: "/backend-despachos"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "backend-despachos"
+
+  # ── Dependencias npm - Frontend ──────────────────────────────────────────────
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "frontend"
+
+  # ── Dependencias Docker ──────────────────────────────────────────────────────
+  - package-ecosystem: "docker"
+    directory: "/backend-ventas"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "docker"
+
+  - package-ecosystem: "docker"
+    directory: "/backend-despachos"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "docker"
+
+  - package-ecosystem: "docker"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "docker"
+
+  # ── GitHub Actions ───────────────────────────────────────────────────────────
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "github-actions"
