@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  backend-despachos:
+    image: gonzalo25u/backend-despachos:latest
+    container_name: backend-despachos
+    restart: unless-stopped
+    environment:
+      DB_ENDPOINT: ${DB_ENDPOINT:-10.0.152.195}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "8080:8080"
+    volumes:
+      - despachos_logs:/app/logs
+    networks:
+      - app-network
+
+volumes:
+  despachos_logs:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

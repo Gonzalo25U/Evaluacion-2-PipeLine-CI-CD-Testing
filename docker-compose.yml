@@ -1,0 +1,112 @@
+version: "3.9"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# docker-compose para desarrollo local
+# Levanta los 4 servicios juntos: MySQL + 2 backends + frontend
+# Para producción, cada servicio se despliega en su EC2 correspondiente
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Base de datos ────────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - app-network
+
+  # ── Backend Ventas ───────────────────────────────────────────────────────────
+  backend-ventas:
+    build:
+      context: ./backend-ventas
+      dockerfile: Dockerfile
+    image: gonzalo25u/backend-ventas:latest
+    container_name: backend-ventas
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_ENDPOINT: mysql
+      DB_PORT: 3306
+      DB_NAME: ${MYSQL_DATABASE}
+      DB_USERNAME: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "8081:8080"
+    volumes:
+      - ventas_logs:/app/logs
+    networks:
+      - app-network
+
+  # ── Backend Despachos ────────────────────────────────────────────────────────
+  backend-despachos:
+    build:
+      context: ./backend-despachos
+      dockerfile: Dockerfile
+    image: gonzalo25u/backend-despachos:latest
+    container_name: backend-despachos
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_ENDPOINT: mysql
+      DB_PORT: 3306
+      DB_NAME: ${MYSQL_DATABASE}
+      DB_USERNAME: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "8080:8080"
+    volumes:
+      - despachos_logs:/app/logs
+    networks:
+      - app-network
+
+  # ── Frontend ─────────────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: gonzalo25u/frontend:latest
+    container_name: frontend
+    restart: unless-stopped
+    depends_on:
+      - backend-ventas
+      - backend-despachos
+    ports:
+      - "80:80"
+    volumes:
+      - nginx_logs:/var/log/nginx
+    networks:
+      - app-network
+
+volumes:
+  mysql_data:
+    driver: local
+  ventas_logs:
+    driver: local
+  despachos_logs:
+    driver: local
+  nginx_logs:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
