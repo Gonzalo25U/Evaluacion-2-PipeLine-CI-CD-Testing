@@ -23,8 +23,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Solo ejecuta el test unitario con Mockito, ignora el test de contexto
-      # que requiere conexión a MySQL
       - name: Ejecutar tests
         working-directory: ./backend-ventas
         run: mvn test jacoco:report -B -Dtest="VentaServiceImplTest" -DfailIfNoTests=false
@@ -52,8 +50,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Solo ejecuta el test unitario con Mockito, ignora el test de contexto
-      # que requiere conexión a MySQL
       - name: Ejecutar tests
         working-directory: ./backend-despachos
         run: mvn test jacoco:report -B -Dtest="DespachoServiceImplTest" -DfailIfNoTests=false
@@ -189,7 +185,19 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          # Agregar EC2 web a known_hosts
           ssh-keyscan -H ${{ secrets.EC2_WEB_HOST }} >> ~/.ssh/known_hosts
+          # Agregar EC2 app a known_hosts via web
+          ssh -o StrictHostKeyChecking=no \
+              -i ~/.ssh/id_rsa \
+              ${{ secrets.EC2_USER }}@${{ secrets.EC2_WEB_HOST }} \
+              "ssh-keyscan -H ${{ secrets.EC2_APP_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
+          # Agregar EC2 data a known_hosts via web → app
+          ssh -o StrictHostKeyChecking=no \
+              -o ProxyJump=${{ secrets.EC2_USER }}@${{ secrets.EC2_WEB_HOST }} \
+              -i ~/.ssh/id_rsa \
+              ${{ secrets.EC2_USER }}@${{ secrets.EC2_APP_HOST }} \
+              "ssh-keyscan -H ${{ secrets.EC2_DATA_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: Crear directorio en EC2 data
         run: |
