@@ -18,7 +18,7 @@ WORKDIR /app
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
 
-COPY --from=builder /app/target/Springboot-API-REST-DESPACHO-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=builder /app/target/Springboot-API-REST-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
