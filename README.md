@@ -80,7 +80,6 @@ test-despachos┘                  ├──→ build-and-push → deploy-data �
 
 ![Frontend desplegado](docs/Pipeline2.png)
 
-
 ### Job 1 y 2 — Pruebas unitarias
 Ejecuta los tests unitarios de cada backend con Maven. Se usa `-Dtest` para correr únicamente los tests con Mockito, evitando los tests de integración que requieren conexión a MySQL. El reporte de cobertura generado por JaCoCo se publica como artefacto descargable en GitHub Actions.
 
@@ -159,6 +158,43 @@ Dependabot revisa automáticamente las dependencias del proyecto cada **lunes** 
 | GitHub Actions | `/` | Semanal |
 
 Los PRs creados por Dependabot incluyen etiquetas como `dependencies`, `frontend`, `backend-ventas` o `backend-despachos` para identificarlos fácilmente.
+
+---
+
+## 🎯 Trazabilidad y calidad del código
+
+### Trazabilidad
+
+Cada imagen Docker publicada en Docker Hub tiene dos tags:
+- `:latest` — apunta siempre a la versión más reciente
+- `:<sha-commit>` — vincula la imagen exactamente al commit de GitHub que la generó
+
+Esto permite saber en todo momento qué versión del código está corriendo en producción. Si algo falla, se puede hacer rollback a una versión anterior ejecutando:
+
+```bash
+docker-compose pull gonzalo25u/backend-ventas:<sha-anterior>
+docker-compose up -d
+```
+
+Además, cada ejecución del pipeline queda registrada en GitHub Actions con su fecha, rama, commit y resultado. Esto genera un historial completo de todos los despliegues realizados.
+
+Los reportes de cobertura de JaCoCo se guardan como artefactos descargables en cada ejecución del pipeline, permitiendo comparar la evolución de la cobertura entre versiones.
+
+---
+
+### Calidad del código
+
+La calidad se garantiza mediante tres capas:
+
+**Capa 1 — Pruebas unitarias (JUnit 5 + Mockito):** cada push a `deploy` ejecuta los tests antes de construir las imágenes. Si un test falla, el pipeline se detiene y no se despliega nada. Esto evita que código con errores llegue a producción.
+
+**Capa 2 — Cobertura de código (JaCoCo):** mide qué porcentaje del código está cubierto por tests. El reporte se envía a SonarCloud y se publica como artefacto en GitHub Actions para seguimiento.
+
+**Capa 3 — Análisis estático (SonarCloud):** analiza el código en busca de bugs, vulnerabilidades, code smells y duplicaciones. Solo si SonarCloud pasa se procede a construir y desplegar las imágenes Docker. Esto asegura que el código que llega a producción cumple estándares mínimos de calidad.
+
+**Dependabot** complementa esto manteniendo las dependencias actualizadas automáticamente, reduciendo el riesgo de vulnerabilidades conocidas en librerías de terceros.
+
+El flujo completo garantiza que ningún cambio llega a producción sin haber pasado por tests, análisis de cobertura y análisis de calidad estático.
 
 ---
 
