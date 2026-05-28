@@ -1,11 +1,4 @@
 version: "3.9"
-
-# ─────────────────────────────────────────────────────────────────────────────
-# docker-compose para desarrollo local
-# Levanta los 4 servicios juntos: MySQL + 2 backends + frontend
-# Para producción, cada servicio se despliega en su EC2 correspondiente
-# ─────────────────────────────────────────────────────────────────────────────
-
 services:
 
   # ── Base de datos ────────────────────────────────────────────────────────────

@@ -186,13 +186,13 @@ Los reportes de cobertura de JaCoCo se guardan como artefactos descargables en c
 
 La calidad se garantiza mediante tres capas:
 
-**Capa 1 — Pruebas unitarias (JUnit 5 + Mockito):** cada push a `deploy` ejecuta los tests antes de construir las imágenes. Si un test falla, el pipeline se detiene y no se despliega nada. Esto evita que código con errores llegue a producción.
+* Capa 1 — Pruebas unitarias (JUnit 5 + Mockito):** cada push a `deploy` ejecuta los tests antes de construir las imágenes. Si un test falla, el pipeline se detiene y no se despliega nada. Esto evita que código con errores llegue a producción.
 
-**Capa 2 — Cobertura de código (JaCoCo):** mide qué porcentaje del código está cubierto por tests. El reporte se envía a SonarCloud y se publica como artefacto en GitHub Actions para seguimiento.
+* Capa 2 — Cobertura de código (JaCoCo):** mide qué porcentaje del código está cubierto por tests. El reporte se envía a SonarCloud y se publica como artefacto en GitHub Actions para seguimiento.
 
-**Capa 3 — Análisis estático (SonarCloud):** analiza el código en busca de bugs, vulnerabilidades, code smells y duplicaciones. Solo si SonarCloud pasa se procede a construir y desplegar las imágenes Docker. Esto asegura que el código que llega a producción cumple estándares mínimos de calidad.
+* Capa 3 — Análisis estático (SonarCloud):** analiza el código en busca de bugs, vulnerabilidades, code smells y duplicaciones. Solo si SonarCloud pasa se procede a construir y desplegar las imágenes Docker. Esto asegura que el código que llega a producción cumple estándares mínimos de calidad.
 
-**Dependabot** complementa esto manteniendo las dependencias actualizadas automáticamente, reduciendo el riesgo de vulnerabilidades conocidas en librerías de terceros.
+* **Dependabot** complementa esto manteniendo las dependencias actualizadas automáticamente, reduciendo el riesgo de vulnerabilidades conocidas en librerías de terceros.
 
 El flujo completo garantiza que ningún cambio llega a producción sin haber pasado por tests, análisis de cobertura y análisis de calidad estático.
 
@@ -217,7 +217,7 @@ El flujo completo garantiza que ningún cambio llega a producción sin haber pas
 
 ---
 
-## 🚀 Instrucciones para ejecutar localmente
+##  Instrucciones para ejecutar localmente
 
 ```bash
 # Clonar el repositorio
@@ -236,18 +236,43 @@ docker-compose logs -f
 
 ---
 
-## 📈 Mejoras respecto a la versión anterior
+## 🚀 Evidencias del funcionamiento del proyecto
 
-La versión anterior del proyecto consistía en **3 repositorios separados**, cada uno con su propio pipeline independiente. Esta versión introduce las siguientes mejoras:
+* ## Docker-Compose
 
-**Monorepo:** todos los servicios en un solo repositorio, lo que facilita la gestión de cambios que afectan a múltiples servicios y evita la duplicación de configuración.
 
-**Pipeline unificado:** un solo `ci-cd.yml` orquesta el despliegue completo en orden — primero los tests, luego el análisis de calidad, luego el build y finalmente el deploy en cada instancia. En la versión anterior cada repo tenía su pipeline independiente sin coordinación entre ellos.
+![Docker compose](docs/Docker-Compose.png)
 
-**Pruebas unitarias:** se agregaron tests con JUnit 5 + Mockito para los servicios de ambos backends, con reporte de cobertura JaCoCo. La versión anterior no tenía tests.
 
-**SonarCloud:** se integró análisis automático de calidad de código en el pipeline. La versión anterior no tenía análisis de código.
+* ##  SonarQube
 
-**Dependabot:** actualización automática de dependencias semanalmente. La versión anterior no tenía gestión automática de dependencias.
 
-**Deploy automatizado de MySQL:** el pipeline ahora despliega automáticamente el contenedor de MySQL en la EC2 `data` usando doble jump host. En la versión anterior esto se hacía manualmente.
+![SonarQube](docs/SonarQube.png)
+
+* ##  Pull-Request Dependabot
+
+
+![Pull-Request Dependabot](docs/Pull_Request_Dependabot.png)
+
+* ##  DependaBot Backend
+
+
+![DependaBot Backend](docs/dependa_back.png)
+
+
+* ##  DependaBot Frontend
+
+
+![DependaBot Frontend](docs/dependa_front.png)
+
+
+* ##  Intancias EC2 en AWS
+
+
+![Intancias EC2](docs/Intancias_EC2.png)
+
+* ##  Aplicacion desplegada en la web
+
+
+
+![Aplicacion desplegada](docs/Aplicacion_desplegada.png)
