@@ -6,7 +6,7 @@ services:
     container_name: backend-ventas
     restart: unless-stopped
     environment:
-      DB_ENDPOINT: ${DB_ENDPOINT:-10.0.152.195}
+      DB_ENDPOINT: ${DB_ENDPOINT:-10.0.145.245}
       DB_PORT: ${DB_PORT:-3306}
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
