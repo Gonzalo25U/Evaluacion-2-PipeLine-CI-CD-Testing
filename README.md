@@ -238,11 +238,25 @@ docker-compose logs -f
 
 ## 🚀 Evidencias del funcionamiento del proyecto
 
-* ## Docker-Compose
+* ## Comprobación de los Docker-Compose
+ ### Debido a que la aplicacion esta desplegada en 3 instancias AWS los docker compose se deben verficar de manera individual:
 
+ * ### Docker-Compose Frontend
 
-![Docker compose](docs/Docker-Compose.png)
+![Docker compose](docs/docker-compose-front.png)
+---
+ * ### Docker-Compose Backend
 
+![Docker compose](docs/docker-compose-backend.png)
+---
+ * ### Docker-Compose Data
+
+![Docker compose](docs/docker-compose-data.png)
+---
+* ## Comprobación completa desde la instancia web de los Docker-Compose de cada instancia 
+ ### Aqui se puede ver de manera más completa los estados de los docker-compose
+
+![Docker compose](docs/vista-final.png)
 
 * ##  SonarQube
 
