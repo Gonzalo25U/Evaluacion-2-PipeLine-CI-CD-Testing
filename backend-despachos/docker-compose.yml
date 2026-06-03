@@ -12,7 +12,7 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "8080:8080"
+      - "8080:8081"
     volumes:
       - despachos_logs:/app/logs
     networks:
